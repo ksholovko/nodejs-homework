@@ -9,19 +9,22 @@ const listContacts = async (req, res) => {
 };
 
 
-const getContactById =  async (req, res) => {
+const getContactById = async (req, res) => {
+ 
+  const { _id } = req.user;
   const { contactId } = req.params;
   const result = await Contact.findById(contactId);
-  if (!result) {
+  if (!result || result.owner.toString() !== _id.toString()) {
     throw HttpError(404, "Not found");
   }
   res.json(result);
 };
 
 const removeContact = async (req, res) => {
+  const { _id } = req.user;
   const { contactId } = req.params;
   const result = await Contact.findByIdAndDelete(contactId);
-  if (!result) {
+  if (!result || result.owner.toString() !== _id.toString()) {
     throw HttpError(404, "Not found");
   }
   res.json({
@@ -31,25 +34,25 @@ const removeContact = async (req, res) => {
 
 const addContact = async (req, res) => {
   const { _id: owner } = req.user;
-  console.log(owner);
   const result = await Contact.create({ ...req.body, owner });
-  console.log(result);
   res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
+  const { _id } = req.user;
   const { contactId } = req.params;
   const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
-  if (!result) {
+  if (!result || result.owner.toString() !== _id.toString()) {
     throw HttpError(404, "Not found");
   }
   res.json(result);
 };
 
 const updateFavorite = async (req, res) => {
+  const { _id } = req.user;
   const { contactId } = req.params;
   const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
-  if (!result) {
+  if (!result || result.owner.toString() !== _id.toString()) {
     throw HttpError(404, "Not found");
   }
   res.json(result);
