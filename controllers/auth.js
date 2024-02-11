@@ -88,7 +88,6 @@ const logout = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
     const { _id } = req.user;
-    console.log(req.file)
   if (!req.file) {
     throw HttpError(400, "Please add image for avatar");
   } else {
